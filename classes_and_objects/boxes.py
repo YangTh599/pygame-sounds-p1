@@ -96,17 +96,31 @@ class Text_box():
 
 class Image_box():
 
-    def __init__(self,window, x, y, width, height, image):
+    def __init__(self,window, x, y, width, height, image, rotation = 0):
         self.window = window
         self.rect = pygame.Rect(x,y,width,height)
         self.x = x
         self.y = y
         self.height = height
         self.width = width
-        self.image = pygame.image.load(image).convert()
+        self.image = pygame.image.load(image).convert_alpha()
+        self.rotation = rotation
+
+    def rotate_image(self, angle):
+        self.rotation = angle
+
+    def scale(self, factor):
+        self.image = pygame.transform.scale(self.image, (self.image.get_rect()[0] * factor, self.image.get_rect()[1] * factor))
 
     def draw_image(self):
-        self.window.blit(self.image, (self.x, self.y))
+        if self.rotation == 0:
+            self.window.blit(self.image, (self.x, self.y))
+        else:
+            
+            rot_image = pygame.transform.rotate(self.image, self.rotation)
+            new_rect = rot_image.get_rect(center = self.image.get_rect(topleft = self.rect.topleft).center)
+            
+            self.window.blit(rot_image, new_rect)
 
 class Button(Text_box):
 
