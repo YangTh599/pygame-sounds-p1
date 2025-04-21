@@ -10,6 +10,7 @@ from colors import *
 from pygame_config import *
 import classes_and_objects.shapes as shapes
 import classes_and_objects.boxes as boxes
+import scene as sc
 
 def init_game():
     """Initiates Pygame, Pygame.font, and sets the Screen window and caption"""
@@ -69,22 +70,10 @@ def main(): # MAIN FUNCTION
     clock = pygame.time.Clock()
     # ADD ALL OBJECTS/CLASSES BELOW HERE
 
-    sans = boxes.Image_box(window, 10,10,50,50, "sans/images/sansm.png")
-    sans.image = pygame.transform.scale(sans.image, (200,200))
+    sans = sc.Sans(window)
+    scenes = [sans]
+    scene_manager = sc.SceneManager(scenes)
 
-    SANS_TALK = "sans/sounds/voice_sans.mp3"
-    background_music = pygame.mixer.Sound("sans/sounds/sans..mp3")
-    music_active = False
-
-    sans_talking = pygame.mixer.Sound(SANS_TALK)
-
-    sans_stuff = [sans, sans_talking]
-    musica = [background_music, music_active]
-
-    music_text = boxes.Text_box(window, 250,25, 250,30, "Press \"p\" to play or pause background music", BLACK)
-    spin_text = boxes.Text_box(window, 250, 80, 250, 35, "Use Spacebar to spin sans the skeleton", BLACK )
-    
-    text = [spin_text, music_text]
 
     # ADD ALL OBJECTS/CLASSES ABOVE HERE
     run = True
@@ -92,11 +81,13 @@ def main(): # MAIN FUNCTION
 
         clock.tick(FPS) # FPS Tick
 
-        run = handle_events(sans_stuff,musica)
+        run = scene_manager.handle_events()
+        scene_manager.update()
+        scene_manager.draw()
+        # run = handle_events(sans_stuff,musica)
         
-
         
-        draw(window,sans,text) # UPDATES SCREEN
+        # draw(window,sans,text) # UPDATES SCREEN
 
     pygame.quit()
     sys.exit()
